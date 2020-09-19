@@ -15,7 +15,10 @@ jobs:
       - name: Cache cabal deps
         uses: actions/cache@v2
         with:
-          path: ~/.cabal/store
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            dist-newstyle
           key: ${{ runner.os }}-cabal-${{ hashFiles('**/fallible.cabal') }}
           restore-keys: |
             ${{ runner.os }}-cabal-
