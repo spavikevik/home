@@ -13,7 +13,7 @@ jobs:
           ref: develop
           fetch-depth: 0
       - name: Cache cabal deps
-        uses: actions/cache
+        uses: actions/cache@v2
         with:
           path: ~/.cabal/store
           key: ${{ runner.os }}-cabal-${{ hashFiles('**/fallible.cabal') }}
