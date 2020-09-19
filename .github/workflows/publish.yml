@@ -29,7 +29,9 @@ jobs:
           ghc-version: '8.8.4'
           enable-stack: true
       - name: Get dependencies
-        run: cabal new-install --dependencies-only
+        run: |
+          cabal new-update
+          cabal new-build --only-dependencies
       - name: Build project
         run: cabal new-build
       - name: Clean before building site
