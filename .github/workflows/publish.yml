@@ -25,6 +25,8 @@ jobs:
         with:
           ghc-version: '8.8.4'
           enable-stack: true
+      - name: Build project
+        run: cabal new-build
       - name: Clean before building site
         run: cabal new-run site clean
       - name: Build site
