@@ -1,0 +1,24 @@
+name: publish
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build-and-publish:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+          fetch-depth: 0
+      - uses: actions/setup-haskell@v1.1
+        with:
+          ghc-version: '8.8.4'
+          enable-stack: true
+          stack-setup-ghc: true
+      - run: stack build
+      - run: stack exec site clean
+      - run: stack exec site build
+      - run: git checkout master
+      - run: chmod u+x sync.sh
+      - run: ./sync.sh
