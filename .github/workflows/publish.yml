@@ -7,18 +7,29 @@ jobs:
   build-and-publish:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Fetch repo
+        uses: actions/checkout@v2
         with:
           ref: develop
           fetch-depth: 0
-      - uses: actions/setup-haskell@v1.1
+      - name: Cache cabal deps
+        uses: actions/cache
+        with:
+          path: ~/.cabal/store
+          key: ${{ runner.os }}-cabal-${{ hashFiles('**/fallible.cabal') }}
+          restore-keys: |
+            ${{ runner.os }}-cabal-
+            ${{ runner.os }}-
+      - name: Setup Haskell environment
+        uses: actions/setup-haskell@v1.1
         with:
           ghc-version: '8.8.4'
           enable-stack: true
-          stack-setup-ghc: true
-      - run: stack build
-      - run: stack exec site clean
-      - run: stack exec site build
-      - run: git checkout master
-      - run: chmod u+x sync.sh
-      - run: ./sync.sh
+      - name: Clean before building site
+        run: cabal new-run site clean
+      - name: Build site
+        run: cabal new-run site build
+      - name: Switch to master branch for publishing
+        run: git checkout master
+      - name: Synchronize pages
+        run: chmod u+x sync.sh && ./sync.sh
